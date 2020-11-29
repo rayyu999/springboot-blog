@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:localhost:3306/sylblog?useUnicode=true&characterEncoding=utf8&autoReconnect=true&useSSL=false
+    username: root
+    password: 960914
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
