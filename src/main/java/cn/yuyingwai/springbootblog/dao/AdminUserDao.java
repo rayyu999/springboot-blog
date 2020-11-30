@@ -1,11 +1,14 @@
 package cn.yuyingwai.springbootblog.dao;
 
 import cn.yuyingwai.springbootblog.entity.AdminUser;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
 
+@Mapper
 public interface AdminUserDao {
 
     /**
