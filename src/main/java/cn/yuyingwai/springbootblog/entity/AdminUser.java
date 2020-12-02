@@ -1,25 +1,33 @@
 package cn.yuyingwai.springbootblog.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
-import java.io.Serializable;
-import java.util.Date;
-
 @Data
-public class AdminUser implements Serializable {
+public class AdminUser {
 
-    private Long id;
+    private Integer adminUserId;
 
-    private String userName;
+    private String loginUserName;
 
-    private String password;
+    private String loginPassword;
 
-    private String userToken;
+    private String nickName;
 
-    private int isDeleted;
+    private Byte locked;
 
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
-    private Date createTime;
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append(" [");
+        sb.append("Hash = ").append(hashCode());
+        sb.append(", adminUserId=").append(adminUserId);
+        sb.append(", loginUserName=").append(loginUserName);
+        sb.append(", loginPassword=").append(loginPassword);
+        sb.append(", nickName=").append(nickName);
+        sb.append(", locked=").append(locked);
+        sb.append("]");
+        return sb.toString();
+    }
 
 }

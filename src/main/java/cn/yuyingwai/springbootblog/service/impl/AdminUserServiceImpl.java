@@ -3,26 +3,20 @@ package cn.yuyingwai.springbootblog.service.impl;
 import cn.yuyingwai.springbootblog.dao.AdminUserDao;
 import cn.yuyingwai.springbootblog.entity.AdminUser;
 import cn.yuyingwai.springbootblog.service.AdminUserService;
-import cn.yuyingwai.springbootblog.util.PageResult;
-import cn.yuyingwai.springbootblog.util.PageUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import cn.yuyingwai.springbootblog.util.MD5Util;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import javax.annotation.Resource;
 
-@Service("adminUserService")
+@Service
 public class AdminUserServiceImpl implements AdminUserService {
 
-    @Autowired
+    @Resource
     private AdminUserDao adminUserDao;
 
     @Override
-    public PageResult getAdminUserPage(PageUtil pageUtil) {
-        // 当前页码中的数据列表
-        List<AdminUser> users = adminUserDao.findAdminUsers(pageUtil);
-        // 数据总条数
-        int total = adminUserDao.getTotalAdminUser(pageUtil);
-        PageResult pageResult = new PageResult(users, total, pageUtil.getLimit(), pageUtil.getPage());
-        return pageResult;
+    public AdminUser login(String userName, String password) {
+        String passwordMd5 = MD5Util.MD5Encode(password, "UTF-8");
+        return adminUserDao.login(userName, passwordMd5);
     }
 }
