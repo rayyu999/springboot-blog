@@ -23,4 +23,8 @@ public interface AdminUserDao {
 
     AdminUser selectByPrimaryKey(Integer adminUserId);
 
+    int updateByPrimaryKeySelective(AdminUser record);
+
+    int updateByPrimaryKey(AdminUser record);
+
 }
