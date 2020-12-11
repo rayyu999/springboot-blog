@@ -6,10 +6,12 @@ import cn.yuyingwai.springbootblog.service.CategoryService;
 import cn.yuyingwai.springbootblog.util.PageQueryUtil;
 import cn.yuyingwai.springbootblog.util.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Service
 public class CategoryServiceImpl implements CategoryService {
 
     @Autowired

@@ -4,7 +4,7 @@ import cn.yuyingwai.springbootblog.entity.BlogCategory;
 import cn.yuyingwai.springbootblog.service.CategoryService;
 import cn.yuyingwai.springbootblog.util.Result;
 import cn.yuyingwai.springbootblog.util.ResultGenerator;
-import cn.yuyingwai.springbootblog.util.PageQueryUtil
+import cn.yuyingwai.springbootblog.util.PageQueryUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
