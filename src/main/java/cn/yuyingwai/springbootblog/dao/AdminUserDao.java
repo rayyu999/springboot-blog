@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 @Mapper
-@Component
 public interface AdminUserDao {
 
     int insert(AdminUser record);
