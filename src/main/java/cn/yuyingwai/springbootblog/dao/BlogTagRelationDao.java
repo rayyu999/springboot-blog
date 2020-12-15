@@ -2,6 +2,7 @@ package cn.yuyingwai.springbootblog.dao;
 
 import cn.yuyingwai.springbootblog.entity.BlogTagRelation;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -21,5 +22,7 @@ public interface BlogTagRelationDao {
     int updateByPrimaryKeySelective(BlogTagRelation record);
 
     int updateByPrimaryKey(BlogTagRelation record);
+
+    int batchInsert(@Param("relationList") List<BlogTagRelation> blogTagRelationList);
 
 }

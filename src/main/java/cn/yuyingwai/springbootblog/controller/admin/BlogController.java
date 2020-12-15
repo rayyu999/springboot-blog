@@ -1,13 +1,17 @@
 package cn.yuyingwai.springbootblog.controller.admin;
 
+import cn.yuyingwai.springbootblog.entity.Blog;
+import cn.yuyingwai.springbootblog.service.BlogService;
+import cn.yuyingwai.springbootblog.service.CategoryService;
 import cn.yuyingwai.springbootblog.util.MyBlogUtils;
+import cn.yuyingwai.springbootblog.util.Result;
+import cn.yuyingwai.springbootblog.util.ResultGenerator;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -23,9 +27,15 @@ import java.util.Random;
 @RequestMapping("/admin")
 public class BlogController {
 
+    @Resource
+    private CategoryService categoryService;
+    @Resource
+    private BlogService blogService;
+
     @GetMapping("/blogs/edit")
     public String edit(HttpServletRequest request) {
         request.setAttribute("path", "edit");
+        request.setAttribute("categories", categoryService.getAllCategories());
         return "admin/edit";
     }
 
@@ -72,6 +82,69 @@ public class BlogController {
             response.getWriter().write("{\"success\":0}");
         } catch (IOException e) {
             response.getWriter().write("{\"success\":0}");
+        }
+    }
+
+    /**
+     * 验证博客信息并保存
+     * @param blogTitle
+     * @param blogSubUrl
+     * @param blogCategoryId
+     * @param blogTags
+     * @param blogContent
+     * @param blogCoverImage
+     * @param blogStatus
+     * @param enableComment
+     * @return
+     */
+    @PostMapping("/blogs/save")
+    @ResponseBody
+    public Result save(@RequestParam("blogTitle") String blogTitle,
+                       @RequestParam(name = "blogSubUrl", required = false) String blogSubUrl,
+                       @RequestParam("blogCategoryId") Integer blogCategoryId,
+                       @RequestParam("blogTags") String blogTags,
+                       @RequestParam("blogContent") String blogContent,
+                       @RequestParam("blogCoverImage") String blogCoverImage,
+                       @RequestParam("blogStatus") Byte blogStatus,
+                       @RequestParam("enableComment") Byte enableComment) {
+        if (StringUtils.isEmpty(blogTitle)) {
+            return ResultGenerator.genFailResult("请输入文章标题");
+        }
+        if (blogTitle.trim().length() > 150) {
+            return ResultGenerator.genFailResult("标题过长");
+        }
+        if (StringUtils.isEmpty(blogTags)) {
+            return ResultGenerator.genFailResult("请输入文章标签");
+        }
+        if (blogTags.trim().length() > 150) {
+            return ResultGenerator.genFailResult("标签过长");
+        }
+        if (blogSubUrl.trim().length() > 150) {
+            return ResultGenerator.genFailResult("路径过长");
+        }
+        if (StringUtils.isEmpty(blogContent)) {
+            return ResultGenerator.genFailResult("请输入文章内容");
+        }
+        if (blogTags.trim().length() > 100000) {
+            return ResultGenerator.genFailResult("文章内容过长");
+        }
+        if (StringUtils.isEmpty(blogCoverImage)) {
+            return ResultGenerator.genFailResult("封面图不能为空");
+        }
+        Blog blog = new Blog();
+        blog.setBlogTitle(blogTitle);
+        blog.setBlogSubUrl(blogSubUrl);
+        blog.setBlogCategoryId(blogCategoryId);
+        blog.setBlogTags(blogTags);
+        blog.setBlogContent(blogContent);
+        blog.setBlogCoverImage(blogCoverImage);
+        blog.setBlogStatus(blogStatus);
+        blog.setEnableComment(enableComment);
+        String saveBlogResult = blogService.saveBlog(blog);
+        if ("success".equals(saveBlogResult)) {
+            return ResultGenerator.genSuccessResult("添加成功");
+        } else {
+            return ResultGenerator.genFailResult(saveBlogResult);
         }
     }
 

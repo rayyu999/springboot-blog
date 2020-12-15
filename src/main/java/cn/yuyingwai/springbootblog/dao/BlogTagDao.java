@@ -29,4 +29,6 @@ public interface BlogTagDao {
 
     int deleteBatch(Integer[] ids);
 
+    int batchInsertBlogTag(List<BlogTag> tagList);
+
 }

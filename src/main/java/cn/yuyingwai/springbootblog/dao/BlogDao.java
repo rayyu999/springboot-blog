@@ -1,35 +1,23 @@
 package cn.yuyingwai.springbootblog.dao;
 
-import cn.yuyingwai.springbootblog.entity.BlogCategory;
-import cn.yuyingwai.springbootblog.util.PageQueryUtil;
+import cn.yuyingwai.springbootblog.entity.Blog;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 @Mapper
 public interface BlogDao {
 
-    int deleteByPrimaryKey(Integer categoryId);
+    int deleteByPrimaryKey(Long blogId);
 
-    int insert(BlogCategory record);
+    int insert(Blog record);
 
-    int insertSelective(BlogCategory record);
+    int insertSelective(Blog record);
 
-    BlogCategory selectByPrimaryKey(Integer categoryId);
+    Blog selectByPrimaryKey(Long blogId);
 
-    BlogCategory selectByCategoryName(String categoryName);
+    int updateByPrimaryKeySelective(Blog record);
 
-    int updateByPrimaryKeySelective(BlogCategory record);
+    int updateByPrimaryKeyWithBLOBs(Blog record);
 
-    int updateByPrimaryKey(BlogCategory record);
-
-    List<BlogCategory> findCategoryList(PageQueryUtil pageUtil);
-
-    List<BlogCategory> selectByCategoryIds(@Param("categoryIds") List<Integer> categoryIds);
-
-    int getTotalCategories(PageQueryUtil pageUtil);
-
-    int deleteBatch(Integer[] ids);
+    int updateByPrimaryKey(Blog record);
 
 }
