@@ -139,6 +139,22 @@ $('#confirmButton').click(function () {
         blogStatus: blogStatus,
         enableComment: enableComment,
     };
+    //blogId大于0则为修改操作
+    if (blogId > 0) {
+        url = '/admin/blogs/update';
+        swlMessage = '修改成功';
+        data = {
+            blogId: blogId,
+            blogTitle: blogTitle,
+            blogSubUrl: blogSubUrl,
+            blogCategoryId: blogCategoryId,
+            blogTags: blogTags,
+            blogContent: blogContent,
+            blogCoverImage: blogCoverImage,
+            blogStatus: blogStatus,
+            enableComment: enableComment,
+        };
+    }
     console.log(data);
     $.ajax({
         type: 'POST', //方法类型
