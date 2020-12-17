@@ -89,7 +89,7 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public Blog getBlogById(Long blogId) {
-        return null;
+        return blogDao.selectByPrimaryKey(blogId);
     }
 
     /**
@@ -168,12 +168,18 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public PageResult getBlogsPage(PageQueryUtil pageUtil) {
-        return null;
+        List<Blog> blogList = blogDao.findBlogList(pageUtil);
+        int total = blogDao.getTotalBlogs(pageUtil);
+        PageResult pageResult = new PageResult(blogList, total, pageUtil.getLimit(), pageUtil.getPage());
+        return pageResult;
     }
 
     @Override
     public Boolean deleteBatch(Integer[] ids) {
-        return null;
+        if (ids.length < 1) {
+            return false;
+        }
+        return blogDao.deleteBatch(ids) > 0;
     }
 
 }

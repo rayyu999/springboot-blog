@@ -1,10 +1,12 @@
 package cn.yuyingwai.springbootblog.controller.admin;
 
+import cn.yuyingwai.springbootblog.config.Constants;
 import cn.yuyingwai.springbootblog.entity.Blog;
 import cn.yuyingwai.springbootblog.entity.BlogTag;
 import cn.yuyingwai.springbootblog.service.BlogService;
 import cn.yuyingwai.springbootblog.service.CategoryService;
 import cn.yuyingwai.springbootblog.util.MyBlogUtils;
+import cn.yuyingwai.springbootblog.util.PageQueryUtil;
 import cn.yuyingwai.springbootblog.util.Result;
 import cn.yuyingwai.springbootblog.util.ResultGenerator;
 import org.springframework.stereotype.Controller;
@@ -22,6 +24,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.Random;
 
 @Controller
@@ -32,6 +35,22 @@ public class BlogController {
     private CategoryService categoryService;
     @Resource
     private BlogService blogService;
+
+    @GetMapping("/blogs")
+    public String list(HttpServletRequest request) {
+        request.setAttribute("path", "blogs");
+        return "admin/blog";
+    }
+
+    @GetMapping("/blogs/list")
+    @ResponseBody
+    public Result list(@RequestParam Map<String, Object> params) {
+        if (StringUtils.isEmpty(params.get("page")) || StringUtils.isEmpty(params.get("limit"))) {
+            return ResultGenerator.genFailResult("参数异常");
+        }
+        PageQueryUtil pageUtil = new PageQueryUtil(params);
+        return ResultGenerator.genSuccessResult(blogService.getBlogsPage(pageUtil));
+    }
 
     @GetMapping("/blogs/edit")
     public String edit(HttpServletRequest request) {
@@ -52,7 +71,6 @@ public class BlogController {
     public void uploadFileByEditormd(HttpServletRequest request,
                                      HttpServletResponse response,
                                      @RequestParam(name = "editormd-image-file", required = true) MultipartFile file) throws IOException, URISyntaxException {
-        String FILE_UPLOAD_DIC = "D:\\upload\\";   // 上传文件的默认url前缀，根据部署设置自行修改
         String fileName = file.getOriginalFilename();
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
         // 生成文件名称通用方法
@@ -62,9 +80,9 @@ public class BlogController {
         tempName.append(sdf.format(new Date())).append(r.nextInt(100)).append(suffixName);
         String newFileName = tempName.toString();
         // 创建文件
-        File destFile = new File(FILE_UPLOAD_DIC + newFileName);
+        File destFile = new File(Constants.FILE_UPLOAD_DIC + newFileName);
         String fileUrl = MyBlogUtils.getHost(new URI(request.getRequestURI() + "")) + "/upload/" + newFileName;
-        File fileDirectory = new File(FILE_UPLOAD_DIC);
+        File fileDirectory = new File(Constants.FILE_UPLOAD_DIC);
         try {
             if (!fileDirectory.exists()) {
                 if (!fileDirectory.mkdir()) {
@@ -211,6 +229,19 @@ public class BlogController {
             return ResultGenerator.genSuccessResult("修改成功");
         } else {
             return ResultGenerator.genFailResult(updateBlogResult);
+        }
+    }
+
+    @PostMapping("/blogs/delete")
+    @ResponseBody
+    public Result delete(@RequestBody Integer[] ids) {
+        if (ids.length < 1) {
+            return ResultGenerator.genFailResult("参数异常！");
+        }
+        if (blogService.deleteBatch(ids)) {
+            return ResultGenerator.genSuccessResult();
+        } else {
+            return ResultGenerator.genFailResult("删除失败");
         }
     }
 
