@@ -51,6 +51,20 @@
         where is_deleted=0
     </select>
 
+    <select id="findBlogListByType" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_blog
+        where is_deleted=0 AND blog_status = 1<!-- 发布状态的文章 -->
+        <if test="type!=null and type==0">
+            order by blog_views desc
+        </if>
+        <if test="type!=null and type==1">
+            order by blog_id desc
+        </if>
+        limit #{limit}
+    </select>
+
     <insert id="insert" parameterType="cn.yuyingwai.springbootblog.entity.Blog">
         insert into tb_blog (blog_id, blog_title, blog_sub_url,
                              blog_cover_image, blog_category_id, blog_category_name,
@@ -249,19 +263,5 @@
             #{id}
         </foreach>
     </update>
-
-    <select id="findBlogListByType" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from tb_blog
-        where is_deleted=0 AND blog_status = 1<!-- 发布状态的文章 -->
-        <if test="type!=null and type==0">
-            order by blog_views desc
-        </if>
-        <if test="type!=null and type==1">
-            order by blog_id desc
-        </if>
-        limit #{limit}
-    </select>
 
 </mapper>
