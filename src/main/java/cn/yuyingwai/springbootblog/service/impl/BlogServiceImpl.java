@@ -1,5 +1,7 @@
 package cn.yuyingwai.springbootblog.service.impl;
 
+import cn.yuyingwai.springbootblog.controller.vo.BlogListVO;
+import cn.yuyingwai.springbootblog.controller.vo.SimpleBlogListVO;
 import cn.yuyingwai.springbootblog.dao.BlogCategoryDao;
 import cn.yuyingwai.springbootblog.dao.BlogDao;
 import cn.yuyingwai.springbootblog.dao.BlogTagDao;
@@ -11,13 +13,16 @@ import cn.yuyingwai.springbootblog.entity.BlogTagRelation;
 import cn.yuyingwai.springbootblog.service.BlogService;
 import cn.yuyingwai.springbootblog.util.PageQueryUtil;
 import cn.yuyingwai.springbootblog.util.PageResult;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BlogServiceImpl implements BlogService {
@@ -180,6 +185,32 @@ public class BlogServiceImpl implements BlogService {
             return false;
         }
         return blogDao.deleteBatch(ids) > 0;
+    }
+
+    @Override
+    public List<SimpleBlogListVO> getBlogListForIndexPage(int type) {
+        List<SimpleBlogListVO> simpleBlogListVOs = new ArrayList<>();
+        List<Blog> blogs = blogDao.findBlogListByType(type, 9);
+        if (!CollectionUtils.isEmpty(blogs)) {
+            for (Blog blog : blogs) {
+                SimpleBlogListVO simpleBlogListVO = new SimpleBlogListVO();
+                BeanUtils.copyProperties(blog, simpleBlogListVO);
+                simpleBlogListVOs.add(simpleBlogListVO);
+            }
+        }
+        return simpleBlogListVOs;
+    }
+
+    @Override
+    public PageResult getBlogsForIndexPage(int page) {
+        Map params = new HashMap();
+        params.put("page", page);
+        // 每页8条
+        params.put("limit", 8);
+        params.put("blogStatus", 1);    // 过滤发布状态下的数据
+        PageQueryUtil pageUtil = new PageQueryUtil(params);
+        List<Blog> blogList = blogDao.findBlogList(pageUtil);
+        List<BlogListVO> blogListVOS =
     }
 
 }

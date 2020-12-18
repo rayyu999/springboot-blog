@@ -1,7 +1,10 @@
 package cn.yuyingwai.springbootblog.service;
 
+import cn.yuyingwai.springbootblog.entity.BlogTagCount;
 import cn.yuyingwai.springbootblog.util.PageQueryUtil;
 import cn.yuyingwai.springbootblog.util.PageResult;
+
+import java.util.List;
 
 public interface TagService {
 
@@ -15,5 +18,7 @@ public interface TagService {
     Boolean saveTag(String tagName);
 
     Boolean deleteBatch(Integer[] ids);
+
+    public List<BlogTagCount> getBlogTagCountForIndex();
 
 }

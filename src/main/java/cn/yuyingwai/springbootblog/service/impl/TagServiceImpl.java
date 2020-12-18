@@ -3,6 +3,7 @@ package cn.yuyingwai.springbootblog.service.impl;
 import cn.yuyingwai.springbootblog.dao.BlogTagDao;
 import cn.yuyingwai.springbootblog.dao.BlogTagRelationDao;
 import cn.yuyingwai.springbootblog.entity.BlogTag;
+import cn.yuyingwai.springbootblog.entity.BlogTagCount;
 import cn.yuyingwai.springbootblog.service.TagService;
 import cn.yuyingwai.springbootblog.util.PageQueryUtil;
 import cn.yuyingwai.springbootblog.util.PageResult;
@@ -64,5 +65,10 @@ public class TagServiceImpl implements TagService {
         }
         // 删除tag
         return blogTagDao.deleteBatch(ids) > 0;
+    }
+
+    @Override
+    public List<BlogTagCount> getBlogTagCountForIndex() {
+        return blogTagDao.getTagCount();
     }
 }

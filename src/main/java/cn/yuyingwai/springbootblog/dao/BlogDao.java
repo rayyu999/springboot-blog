@@ -3,6 +3,7 @@ package cn.yuyingwai.springbootblog.dao;
 import cn.yuyingwai.springbootblog.entity.Blog;
 import cn.yuyingwai.springbootblog.util.PageQueryUtil;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -28,5 +29,7 @@ public interface BlogDao {
     int getTotalBlogs(PageQueryUtil pageUtil);
 
     int deleteBatch(Integer[] ids);
+
+    List<Blog> findBlogListByType(@Param("type") int type, @Param("limit") int limit);
 
 }

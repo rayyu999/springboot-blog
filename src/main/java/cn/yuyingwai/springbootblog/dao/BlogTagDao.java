@@ -1,6 +1,7 @@
 package cn.yuyingwai.springbootblog.dao;
 
 import cn.yuyingwai.springbootblog.entity.BlogTag;
+import cn.yuyingwai.springbootblog.entity.BlogTagCount;
 import cn.yuyingwai.springbootblog.util.PageQueryUtil;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -30,5 +31,7 @@ public interface BlogTagDao {
     int deleteBatch(Integer[] ids);
 
     int batchInsertBlogTag(List<BlogTag> tagList);
+
+    List<BlogTagCount> getTagCount();
 
 }
