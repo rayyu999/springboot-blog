@@ -13,6 +13,7 @@ import cn.yuyingwai.springbootblog.entity.BlogTagRelation;
 import cn.yuyingwai.springbootblog.service.BlogService;
 import cn.yuyingwai.springbootblog.util.PageQueryUtil;
 import cn.yuyingwai.springbootblog.util.PageResult;
+import cn.yuyingwai.springbootblog.util.PatternUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -249,6 +250,30 @@ public class BlogServiceImpl implements BlogService {
             }
         }
         return blogListVOS;
+    }
+
+    /**
+     * 根据搜索关键字获取首页文章列表
+     * @param keyword
+     * @param page
+     * @return
+     */
+    @Override
+    public PageResult getBlogsPageBySearch(String keyword, int page) {
+        if (page > 0 && PatternUtil.validKeyword(keyword)) {
+            Map param = new HashMap();
+            param.put("page", page);
+            param.put("limit", 9);
+            param.put("keyword", keyword);
+            param.put("blogStatus", 1); // 过滤发布状态下的数据
+            PageQueryUtil pageUtil = new PageQueryUtil(param);
+            List<Blog> blogList = blogDao.findBlogList(pageUtil);
+            List<BlogListVO> blogListVOS = getBlogListVOsByBlogs(blogList);
+            int total = blogDao.getTotalBlogs(pageUtil);
+            PageResult pageResult = new PageResult(blogListVOS, total, pageUtil.getLimit(), pageUtil.getPage());
+            return pageResult;
+        }
+        return null;
     }
 
 }

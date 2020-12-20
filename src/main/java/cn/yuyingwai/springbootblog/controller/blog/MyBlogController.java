@@ -47,4 +47,32 @@ public class MyBlogController {
         return "blog/index";
     }
 
+    /**
+     * 搜索列表页
+     * @param request
+     * @param keyword
+     * @return
+     */
+    @GetMapping({"/search/{keyword}"})
+    public String search(HttpServletRequest request, @PathVariable("keyword") String keyword) {
+        return search(request, keyword, 1);
+    }
+
+    /**
+     * 搜索列表页
+     * @param request
+     * @param keyword
+     * @param page
+     * @return
+     */
+    @GetMapping({"/search/{keyword}/{page}"})
+    public String search(HttpServletRequest request, @PathVariable("keyword") String keyword, @PathVariable("page") Integer page) {
+        PageResult blogPageResult = blogService.getBlogsPageBySearch(keyword, page);
+        request.setAttribute("blogPageResult", blogPageResult);
+        request.setAttribute("pageName", "搜索");
+        request.setAttribute("pageUrl", "search");
+        request.setAttribute("keyword", keyword);
+        return "blog/list";
+    }
+
 }

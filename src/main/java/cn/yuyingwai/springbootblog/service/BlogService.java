@@ -44,4 +44,6 @@ public interface BlogService {
      */
     PageResult getBlogsForIndexPage(int page);
 
+    PageResult getBlogsPageBySearch(String keyword, int page);
+
 }
