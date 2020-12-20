@@ -276,4 +276,35 @@ public class BlogServiceImpl implements BlogService {
         return null;
     }
 
+    /**
+     * 根据分类获取首页文章列表
+     * @param categoryName
+     * @param page
+     * @return
+     */
+    @Override
+    public PageResult getBlogsPageByCategory(String categoryName, int page) {
+        if (PatternUtil.validKeyword(categoryName)) {
+            BlogCategory blogCategory = categoryDao.selectByCategoryName(categoryName);
+            if ("默认分类".equals(categoryName) && blogCategory == null) {
+                blogCategory = new BlogCategory();
+                blogCategory.setCategoryId(0);
+            }
+            if (blogCategory != null && page > 0) {
+                Map param = new HashMap();
+                param.put("page", page);
+                param.put("limit", 9);
+                param.put("blogCategoryId", blogCategory.getCategoryId());
+                param.put("blogStatus", 1); // 过滤发布状态下的数据
+                PageQueryUtil pageUtil = new PageQueryUtil(param);
+                List<Blog> blogList = blogDao.findBlogList(pageUtil);
+                List<BlogListVO> blogListVOS = getBlogListVOsByBlogs(blogList);
+                int total = blogDao.getTotalBlogs(pageUtil);
+                PageResult pageResult = new PageResult(blogListVOS, total, pageUtil.getLimit(), pageUtil.getPage());
+                return pageResult;
+            }
+        }
+        return null;
+    }
+
 }
