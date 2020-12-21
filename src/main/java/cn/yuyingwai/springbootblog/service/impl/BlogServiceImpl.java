@@ -1,5 +1,6 @@
 package cn.yuyingwai.springbootblog.service.impl;
 
+import cn.yuyingwai.springbootblog.controller.vo.BlogDetailVO;
 import cn.yuyingwai.springbootblog.controller.vo.BlogListVO;
 import cn.yuyingwai.springbootblog.controller.vo.SimpleBlogListVO;
 import cn.yuyingwai.springbootblog.dao.BlogCategoryDao;
@@ -11,6 +12,7 @@ import cn.yuyingwai.springbootblog.entity.BlogCategory;
 import cn.yuyingwai.springbootblog.entity.BlogTag;
 import cn.yuyingwai.springbootblog.entity.BlogTagRelation;
 import cn.yuyingwai.springbootblog.service.BlogService;
+import cn.yuyingwai.springbootblog.util.MarkDownUtil;
 import cn.yuyingwai.springbootblog.util.PageQueryUtil;
 import cn.yuyingwai.springbootblog.util.PageResult;
 import cn.yuyingwai.springbootblog.util.PatternUtil;
@@ -19,11 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -303,6 +303,82 @@ public class BlogServiceImpl implements BlogService {
                 PageResult pageResult = new PageResult(blogListVOS, total, pageUtil.getLimit(), pageUtil.getPage());
                 return pageResult;
             }
+        }
+        return null;
+    }
+
+    /**
+     * 根据标签获取首页文章列表
+     * @param tagName
+     * @param page
+     * @return
+     */
+    @Override
+    public PageResult getBlogsPageByTag(String tagName, int page) {
+        if (PatternUtil.validKeyword(tagName)) {
+            BlogTag tag = tagDao.selectByTagName(tagName);
+            if (tag != null && page > 0) {
+                Map param = new HashMap();
+                param.put("page", page);
+                param.put("limit", 9);
+                param.put("tagId", tag.getTagId());
+                PageQueryUtil pageUtil = new PageQueryUtil(param);
+                List<Blog> blogList = blogDao.getBlogsPageByTagId(pageUtil);
+                List<BlogListVO> blogListVOS = getBlogListVOsByBlogs(blogList);
+                int total = blogDao.getTotalBlogsByTagId(pageUtil);
+                PageResult pageResult = new PageResult(blogListVOS, total, pageUtil.getLimit(), pageUtil.getPage());
+                return pageResult;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 文章详情获取
+     * @param blogId
+     * @return
+     */
+    @Override
+    public BlogDetailVO getBlogDetail(Long blogId) {
+        Blog blog = blogDao.selectByPrimaryKey(blogId);
+        // 不为空且状态为已发布
+        BlogDetailVO blogDetailVO = getBlogDetailVO(blog);
+        if (blogDetailVO != null) {
+            return blogDetailVO;
+        }
+        return null;
+    }
+
+    /**
+     * 方法抽取
+     * @param blog
+     * @return
+     */
+    private BlogDetailVO getBlogDetailVO(Blog blog) {
+        // 判空以及发布状态是否为已发布
+        if (blog != null && blog.getBlogStatus() == 1) {
+            // 增加浏览量
+            blog.setBlogViews(blog.getBlogViews() + 1);
+            blogDao.updateByPrimaryKey(blog);
+            BlogDetailVO blogDetailVO = new BlogDetailVO();
+            BeanUtils.copyProperties(blog, blogDetailVO);
+            // md格式转换
+            blogDetailVO.setBlogContent(MarkDownUtil.mdToHtml(blogDetailVO.getBlogContent()));
+            BlogCategory blogCategory = categoryDao.selectByPrimaryKey(blogDetailVO.getBlogCategoryId());
+            if (blogCategory == null) {
+                blogCategory = new BlogCategory();
+                blogCategory.setCategoryId(0);
+                blogCategory.setCategoryName("默认分类");
+                blogCategory.setCategoryIcon("/admin/dist/img/category/00.png");
+            }
+            // 分类信息
+            blogDetailVO.setBlogCategoryIcon(blogCategory.getCategoryIcon());
+            if (!StringUtils.isEmpty(blog.getBlogTags())) {
+                // 标签设置
+                List<String> tags = Arrays.asList(blog.getBlogTags().split(","));
+                blogDetailVO.setBlogTags(tags);
+            }
+            return blogDetailVO;
         }
         return null;
     }

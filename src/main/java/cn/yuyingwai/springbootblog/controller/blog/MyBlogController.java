@@ -1,5 +1,6 @@
 package cn.yuyingwai.springbootblog.controller.blog;
 
+import cn.yuyingwai.springbootblog.controller.vo.BlogDetailVO;
 import cn.yuyingwai.springbootblog.service.BlogService;
 import cn.yuyingwai.springbootblog.service.TagService;
 import cn.yuyingwai.springbootblog.util.PageResult;
@@ -73,6 +74,78 @@ public class MyBlogController {
         request.setAttribute("pageUrl", "search");
         request.setAttribute("keyword", keyword);
         return "blog/list";
+    }
+
+    /**
+     * 分类列表页
+     * @param request
+     * @param categoryName
+     * @return
+     */
+    @GetMapping({"/category/{categoryName}"})
+    public String category(HttpServletRequest request, @PathVariable("categoryName") String categoryName) {
+        return category(request, categoryName, 1);
+    }
+
+    /**
+     * 分类列表页
+     * @param request
+     * @param categoryName
+     * @param page
+     * @return
+     */
+    @GetMapping({"/category/{categoryName}/{page}"})
+    public String category(HttpServletRequest request, @PathVariable("categoryName") String categoryName, @PathVariable("page") Integer page) {
+        PageResult blogPageResult = blogService.getBlogsPageByCategory(categoryName, page);
+        request.setAttribute("blogPageResult", blogPageResult);
+        request.setAttribute("pageName", "分类");
+        request.setAttribute("pageUrl", "category");
+        request.setAttribute("keyword", categoryName);
+        return "blog/list";
+    }
+
+    /**
+     * 标签列表页
+     * @param request
+     * @param tagName
+     * @return
+     */
+    @GetMapping({"/tag/{tagName}"})
+    public String tag(HttpServletRequest request, @PathVariable("tagName") String tagName) {
+        return tag(request, tagName, 1);
+    }
+
+    /**
+     * 标签列表页
+     * @param request
+     * @param tagName
+     * @param page
+     * @return
+     */
+    @GetMapping({"/tag/{tagName}/{page}"})
+    public String tag(HttpServletRequest request, @PathVariable("tagName") String tagName, @PathVariable("page") Integer page) {
+        PageResult blogPageResult = blogService.getBlogsPageByTag(tagName, page);
+        request.setAttribute("blogPageResult", blogPageResult);
+        request.setAttribute("pageName", "标签");
+        request.setAttribute("pageUrl", "tag");
+        request.setAttribute("keyword", tagName);
+        return "blog/list";
+    }
+
+    /**
+     * 详情页
+     * @param request
+     * @param blogId
+     * @return
+     */
+    @GetMapping("/blog/{blogId}")
+    public String detail(HttpServletRequest request, @PathVariable("blogId") Long blogId) {
+        BlogDetailVO blogDetailVO = blogService.getBlogDetail(blogId);
+        if (blogDetailVO != null) {
+            request.setAttribute("blogDetailVO", blogDetailVO);
+        }
+        request.setAttribute("pageName", "详情");
+        return "blog/detail";
     }
 
 }

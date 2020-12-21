@@ -12,7 +12,7 @@
                         <div class="col-md-6 col-sm-6 blog-main-card">
                             <article class="blog-summary">
                                 <header>
-                                    <a>
+                                    <a th:href="@{'/blog/' + ${blog.blogId}}">
                                         <img th:src="@{${blog.blogCoverImage}}" alt="">
                                         <h3>
                                             <th:block th:text="${blog.blogTitle}"></th:block>
@@ -76,9 +76,11 @@
                             <th:block th:if="${null != hotBlogs}">
                                 <th:block th:each="hotBlog : ${hotBlogs}">
                                     <!-- 链接暂定，后面实现了文章详情再写 -->
-                                    <li><a>
-                                        <th:block th:text="${hotBlog.blogTitle}"></th:block>
-                                    </a></li>
+                                    <li>
+                                        <a th:href="@{'/blog/' + ${hotBlog.blogId}}">
+                                            <th:block th:text="${hotBlog.blogTitle}"></th:block>
+                                        </a>
+                                    </li>
                                 </th:block>
                             </th:block>
                         </ul>
@@ -92,9 +94,11 @@
                         <ul class="clean-list">
                             <th:block th:if="${null != newBlogs}">
                                 <th:block th:each="newBlog : ${newBlogs}">
-                                    <li><a>
-                                        <th:block th:text="${newBlog.blogTitle}"></th:block>
-                                    </a></li>
+                                    <li>
+                                        <a th:href="@{'/blog/' + ${newBlog.blogId}}">
+                                            <th:block th:text="${newBlog.blogTitle}"></th:block>
+                                        </a>
+                                    </li>
                                 </th:block>
                             </th:block>
                         </ul>
@@ -109,8 +113,11 @@
                             <th:block th:if="${null != hotTags}">
                                 <th:block th:each="hotTag : ${hotTags}">
                                     <li>
-                                        <a>
-                                            <th:block th:text="${hotTag.tagName}+'('+${hotTag.tagCount}+')'"></th:block>
+                                        <a th:href="@{'/tag/' + ${hotTag.tagName}}"
+                                        ><!-- 标签搜索链接 -->
+                                            <th:block
+                                                    th:text="${hotTag.tagName}+'('+${hotTag.tagCount}+')'"
+                                            ></th:block>
                                         </a>
                                     </li>
                                 </th:block>

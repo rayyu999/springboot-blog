@@ -1,5 +1,6 @@
 package cn.yuyingwai.springbootblog.service;
 
+import cn.yuyingwai.springbootblog.controller.vo.BlogDetailVO;
 import cn.yuyingwai.springbootblog.controller.vo.SimpleBlogListVO;
 import cn.yuyingwai.springbootblog.entity.Blog;
 import cn.yuyingwai.springbootblog.util.PageQueryUtil;
@@ -47,5 +48,9 @@ public interface BlogService {
     PageResult getBlogsPageBySearch(String keyword, int page);
 
     PageResult getBlogsPageByCategory(String categoryName, int page);
+
+    PageResult getBlogsPageByTag(String tagName, int page);
+
+    BlogDetailVO getBlogDetail(Long blogId);
 
 }

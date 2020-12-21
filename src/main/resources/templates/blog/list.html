@@ -13,10 +13,8 @@
                             <article class="blog-summary">
                                 <header>
                                     <a th:href="@{'/blog/' + ${blog.blogId}}">
-                                        <img th:src="@{${blog.blogCoverImage}}" alt="">
-                                        <h3>
-                                            <th:block th:text="${blog.blogTitle}"></th:block>
-                                        </h3>
+                                        <img th:src="@{${blog.blogCoverImage}}" alt="" />
+                                        <h3><th:block th:text="${blog.blogTitle}"></th:block></h3>
                                     </a>
                                     <div class="blog-category">
                                         <a th:href="@{'/category/' + ${blog.blogCategoryName}}">
