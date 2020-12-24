@@ -9,7 +9,9 @@ import java.util.List;
 @Data
 public class BlogDetailVO implements Serializable {
 
-    private Long blogTitle;
+    private Long blogId;
+
+    private String blogTitle;
 
     private Integer blogCategoryId;
 

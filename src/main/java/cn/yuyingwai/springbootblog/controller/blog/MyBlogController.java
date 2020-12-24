@@ -144,10 +144,12 @@ public class MyBlogController {
      * @return
      */
     @GetMapping("/blog/{blogId}")
-    public String detail(HttpServletRequest request, @PathVariable("blogId") Long blogId) {
+    public String detail(HttpServletRequest request, @PathVariable("blogId") Long blogId,
+                         @RequestParam(value = "commentPage", required = false, defaultValue = "1") Integer commentPage) {
         BlogDetailVO blogDetailVO = blogService.getBlogDetail(blogId);
         if (blogDetailVO != null) {
             request.setAttribute("blogDetailVO", blogDetailVO);
+            request.setAttribute("commentPageResult", commentService.getCommentPageByBlogIdAndPageNum(blogId, commentPage));
         }
         request.setAttribute("pageName", "详情");
         return "blog/detail";
